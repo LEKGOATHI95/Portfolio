@@ -1,0 +1,527 @@
+     -- create
+CREATE TABLE Customer (
+    CustomerID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Address VARCHAR(255),
+    City VARCHAR(100),
+    State VARCHAR(50),
+    ZipCode VARCHAR(20),
+    PhoneNumber VARCHAR(20),
+    Email VARCHAR(100),
+    DateOfBirth DATE,
+    Gender ENUM('Male', 'Female', 'Other'),
+    Occupation VARCHAR(100),
+    Interests TEXT,
+    Notes TEXT
+);
+
+-- insert
+INSERT INTO Customer (CustomerID, FirstName, LastName, Address, City, State, ZipCode, PhoneNumber, Email, DateOfBirth, Gender, Occupation, Interests, Notes)
+VALUES (1, 'Martin', 'Lekgwathi', '10915 Mabena St', 'Benoni', 'SA', '1520', '079-724-2183', 'mphoke24@gmail.com', '1995-11-26', 'Male', 'Business Analyst', 'Soccer, Reading', 'Regular customer');
+
+-- fetch 
+SELECT * FROM Customer;
+
+
+  -- to search we can use a select statement
+SELECT * FROM Customer WHERE FirstName = 'Martin' AND LastName = 'Lekgwathi';
+
+  -- we use UPDATE to edit
+UPDATE Customer
+SET FirstName = 'Jane', LastName = 'Smith', PhoneNumber = '063-123-4567' 
+WHERE CustomerID = 2;
+
+-- fetch
+SELECT * FROM Customer; 
+
+
+    -- creat a table to store Customer Credentials
+CREATE TABLE CustomerCredentials (
+    CustomerID INT PRIMARY KEY,
+    LoginName VARCHAR(50),
+    Password VARCHAR(50)
+);
+
+-- insert Customer login Credentials
+INSERT INTO CustomerCredentials (CustomerID, LoginName, Password)
+VALUES (1, 'Martin_95', 'password123');
+
+-- fetch
+SELECT * FROM CustomerCredentials WHERE LoginName = 'Martin_95' AND Password = 'password123';
+
+
+  -- Alter the Customer TABLE
+ALTER TABLE Customer ADD COLUMN Blacklisted BOOLEAN DEFAULT FALSE;
+
+-- Blacklist a Customer
+UPDATE Customer SET Blacklisted = TRUE WHERE CustomerID = 1;
+
+-- handle Blacklisting status
+SELECT * FROM Customer WHERE CustomerID = 1 AND Blacklisted = TRUE;
+     
+ 
+
+   -- create order
+CREATE TABLE Orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_amount DECIMAL(10, 2),
+    status VARCHAR(20)
+);
+
+-- insert
+INSERT INTO Orders (customer_id, total_amount, status)
+VALUES (123, 50.00, 'pending');
+
+select * from Orders;
+
+
+  -- create order_items
+ CREATE TABLE Order_Items (
+    order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    product_id INT,
+    quantity INT,
+    price DECIMAL(10, 2),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
+);
+
+INSERT INTO Order_Items (order_id, product_id, quantity, price)
+VALUES (1, 123, 2, 10.99);
+
+select * from Order_Items;
+
+-- Changing the Quantity of an Item
+UPDATE Order_Items
+SET quantity = 5
+WHERE order_id = 1 AND product_id = 123;
+
+select * from Order_Items;
+
+-- Removing an Item from the Cart
+DELETE FROM Order_Items
+WHERE order_id = 1 AND product_id = 123;
+
+select * from Order_Items;
+
+
+   SELECT * FROM Orders WHERE order_id = 123;
+
+  -- update status
+UPDATE Orders
+SET status = 'Refunded'
+WHERE order_id = 123;
+
+select * from Orders; 
+
+
+3.1. Create a gateway record in the Payment module.
+     -- create gateway payment
+CREATE TABLE Payment_Gateways (
+    gateway_id INT AUTO_INCREMENT PRIMARY KEY,
+    gateway_name VARCHAR(255),
+    gateway_type VARCHAR(100),
+    api_key VARCHAR(255),
+    secret_key VARCHAR(255),
+    additional_info TEXT
+);
+
+-- insert 
+INSERT INTO Payment_Gateways (gateway_name, gateway_type, api_key, secret_key, additional_info)
+VALUES ('Stripe', 'Credit Card', 'BB558', '0057', 'Additional information about the gateway');
+
+select * from Payment_Gateways;
+
+
+ -- Search for the Gateway Record
+SELECT * FROM Payment_Gateways WHERE gateway_id = 1;
+
+    -- Edit the Gateway Record
+UPDATE Payment_Gateways
+SET api_key = '21452', secret_key = '@4587'
+WHERE gateway_id = 1;
+
+SELECT * FROM Payment_Gateways WHERE gateway_id = 1;
+
+
+ -- collect the payment for Orders
+UPDATE Orders
+SET status = 'Paid'
+WHERE order_id = 1;
+
+select * from orders;
+
+
+   -- refund payment
+UPDATE Orders
+SET status = 'Refunded'
+WHERE order_id = 1;
+
+select * from orders;
+
+
+  -- create a stock item
+CREATE TABLE stock_item (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10, 2),
+    quantity INT
+);
+-- insert
+INSERT INTO stock_item (name, description, price, quantity) 
+VALUES ('Product Name', 'Product Description', 10.99, 100);
+
+-- fetch
+select * from stock_item;
+
+
+  -- create a stock item
+CREATE TABLE stock_item (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10, 2),
+    quantity INT
+);
+-- insert
+INSERT INTO stock_item (name, description, price, quantity) 
+VALUES ('Product Name', 'Product Description', 10.99, 100);
+
+-- fetch
+select * from stock_item;
+
+
+   -- create a stock item
+CREATE TABLE stock_item (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10, 2),
+    quantity INT
+);
+-- insert
+INSERT INTO stock_item (name, description, price, quantity) 
+VALUES ('Product Name', 'Product Description', 10.99, 100);
+
+-- fetch
+select * from stock_item;
+
+
+CREATE TABLE stock_items (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    -- Other columns for stock item details
+);
+
+CREATE TABLE media_items (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    filename VARCHAR(255) NOT NULL,
+    media_type ENUM('video', 'photo', 'pdf') NOT NULL,
+    -- Other columns for media item details
+);
+
+CREATE TABLE stock_item_media (
+    stock_item_id INT,
+    media_item_id INT,
+    PRIMARY KEY (stock_item_id, media_item_id),
+    FOREIGN KEY (stock_item_id) REFERENCES stock_items(id),
+    FOREIGN KEY (media_item_id) REFERENCES media_items(id)
+);
+
+
+
+ -- create a campaigns
+CREATE TABLE campaigns (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    start_date DATE,
+    end_date DATE,
+    budget DECIMAL(10, 2)
+);
+
+-- insert a new campaigns
+INSERT INTO campaigns (name, description, start_date, end_date, budget)
+VALUES ('Spring Sale', 'Big discounts on selected items', '2024-04-01', '2024-04-30', 5000.00);
+
+-- search for a campaigns
+SELECT * FROM campaigns WHERE name = 'Spring Sale';
+
+-- edit a campaigns
+UPDATE campaigns
+SET description = 'Huge discounts on all products'
+WHERE name = 'Spring Sale';
+
+-- fetch
+select * from campaigns;
+
+
+
+-- create a table for orders
+
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    total_amount DECIMAL(10, 2),
+    region VARCHAR(100),
+    campaign VARCHAR(100)
+);
+
+
+-- insert
+INSERT INTO orders (customer_id, order_date, total_amount, region, campaign)
+VALUES (12345, '2024-04-15', 150.99, 'North America', 'Spring Sale');
+
+-- fetch
+select * from orders;
+
+-- new orders between two dates
+SELECT * 
+FROM orders 
+WHERE order_date BETWEEN '2024-04-16' AND '2024-04-18';
+
+-- Orders Grouped by Geographic Region
+SELECT region, COUNT(*) as order_count
+FROM orders 
+GROUP BY region;
+
+-- Orders Grouped by Marketing Campaign:
+SELECT campaign, COUNT(*) as order_count
+FROM orders 
+GROUP BY campaign;
+
+-- Total Revenue from Orders Between Two Dates:
+SELECT SUM(total_amount) as total_revenue
+FROM orders 
+WHERE order_date BETWEEN '2024-04-16' AND '2024-04-18';
+
+-- Top N Customers by Order Count
+SELECT customer_id, COUNT(*) as order_count
+FROM orders 
+GROUP BY customer_id 
+ORDER BY order_count DESC 
+LIMIT 1;
+
+-- Average Order Value by Geographic Region
+SELECT region, AVG(total_amount) as avg_order_value
+FROM orders 
+GROUP BY region;
+
+
+
+-- create a table for customer
+CREATE TABLE customers (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255),
+    phone_number VARCHAR(20),
+    address VARCHAR(255)
+);
+
+-- insert
+INSERT INTO customers (name, email, phone_number, address)
+VALUES ('Martin', 'mphoke24@gmail.com', '079-724-2183', '10915 Mabena St, Benobi, RSA');
+
+select * from customers;
+
+
+-- create a table for stock_items
+CREATE TABLE stock_items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    item_name VARCHAR(255),
+    quantity INT,
+    sales INT
+);
+
+-- insert
+INSERT INTO stock_items (item_name, quantity, sales)
+VALUES ('Plates', 100, 50),
+       ('Cups', 150, 80),
+       ('Glass', 200, 30);
+
+
+select * from stock_items;
+
+-- Stock Levels Report
+
+SELECT item_id, item_name, quantity
+FROM stock_items;
+
+
+
+
+-- Fast-Moving Items Report
+ALTER TABLE stock_items
+ADD COLUMN quantity_sold INT;
+
+
+SELECT item_id, item_name, SUM(quantity_sold) AS total_sold
+FROM stock_items
+GROUP BY item_id
+ORDER BY total_sold DESC;
+
+-- Slow-Moving Items Report
+
+SELECT item_id, item_name, SUM(quantity_sold) AS total_sold
+FROM stock_items
+GROUP BY item_id
+ORDER BY total_sold ASC;
+
+-- Replenishment Report
+
+SELECT item_id, item_name, (sales - quantity) AS replenish_quantity
+FROM stock_items
+WHERE sales > quantity;
+
+-- Inventory Turnover Report
+
+SELECT item_id, item_name, (SUM(quantity_sold) / AVG(quantity)) AS inventory_turnover
+FROM stock_items
+GROUP BY item_id;
+
+
+
+-- create a table for orders
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    total_amount DECIMAL(10, 2),
+    status ENUM('completed', 'abandoned')
+);
+
+-- Insert an abandoned cart record
+INSERT INTO orders (customer_id, order_date, total_amount, status)
+VALUES (5, '2024-04-16', 0.00, 'abandoned');
+
+select * from orders;
+
+-- Report on abandoned carts
+SELECT *
+FROM orders
+WHERE status = 'abandoned';
+
+
+-- create a table for orders
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    total_amount DECIMAL(10, 2),
+    campaign VARCHAR(255)
+);
+
+-- Insert a record for a sale within a campaign
+INSERT INTO orders (customer_id, order_date, total_amount, campaign)
+VALUES (5, '2024-04-16', 100.00, 'Spring Sale');
+
+-- Report on sales activity within a specific campaign
+SELECT *
+FROM orders
+WHERE campaign = 'Spring Sale';
+
+
+
+-- create BackendSupportUsers
+
+CREATE TABLE BackendSupportUsers (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    role ENUM('support', 'admin') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- insert into BackendSupportUsers
+
+INSERT INTO BackendSupportUsers (username, password, email, role) VALUES
+('admin1', 'adminpassword1', 'admin1@example.com', 'admin'),
+('support1', 'supportpassword1', 'support1@example.com', 'support'),
+('support2', 'supportpassword2', 'support2@example.com', 'support');
+
+select * from BackendSupportUsers;
+
+
+
+  -- Search by username
+SELECT * FROM BackendSupportUsers WHERE username = 'admin1';
+
+
+   -- Update username or email for a support user with a specific user_id
+UPDATE BackendSupportUsers
+SET username = 'EraN25', email = 'EraN25@gmail.com'
+WHERE user_id = 1;
+
+select * from BackendSupportUsers;
+
+
+-- create ImportStockItems
+CREATE TABLE ImportStockItems (
+    import_id INT AUTO_INCREMENT PRIMARY KEY,
+    item_name VARCHAR(100) NOT NULL,
+    supplier_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    -- Add more columns as needed
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+LOAD DATA INFILE 'path_to_import_file.csv'
+INTO TABLE ImportStockItems
+FIELDS TERMINATED BY ',' -- Assuming CSV file format
+LINES TERMINATED BY '\n' -- Assuming newline-separated values
+(item_name, supplier_id, quantity, price);
+
+-- INSERT
+
+INSERT INTO StockItems (item_name, supplier_id, quantity, price)
+SELECT item_name, supplier_id, quantity, price
+FROM ImportStockItems;
+
+-- drop table
+DROP TABLE ImportStockItems;
+
+
+
+  -- create ImportedMediaItems
+CREATE TABLE ImportedMediaItems (
+    media_id INT AUTO_INCREMENT PRIMARY KEY,
+    media_name VARCHAR(100) NOT NULL,
+    media_type ENUM('image', 'video', 'document') NOT NULL,
+    file_path VARCHAR(255) NOT NULL,
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- create StockMediaAssociations
+CREATE TABLE StockMediaAssociations (
+    association_id INT AUTO_INCREMENT PRIMARY KEY,
+    stock_item_id INT NOT NULL,
+    media_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- INSERT
+INSERT INTO StockMediaAssociations (stock_item_id, media_id)
+VALUES (stock_item_id, media_id);
+
+select * from StockMediaAssociations;
+
+
+-- to export files in mysql we use the select into outfiles
+
+SELECT column1, column2, column3
+INTO OUTFILE '/path/to/exported_file.csv'
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+FROM your_table_name;
+
+
+
